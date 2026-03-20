@@ -1,0 +1,14 @@
+mysql:
+  host: "localhost"
+  port: 3306
+  database: "auction"
+  username: "root"
+  password: "password"
+  pool-size: 10
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  # 缓存 TTL（秒）
+  page-ttl: 300

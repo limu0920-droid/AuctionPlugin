@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(yml|yaml|properties|gradle\\\\.kts\\)$\")",
+      "Bash(./gradlew shadowJar)"
+    ]
+  }
+}
