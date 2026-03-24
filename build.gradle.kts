@@ -17,10 +17,6 @@ taboolib {
         install(Bukkit)
         install(BukkitHook)
         install(BukkitUtil)
-        install(BukkitNMS)
-        install(BukkitNMSUtil)
-        install(BukkitNMSItemTag)
-        install(BukkitNMSDataSerializer)
         install(CommandHelper)
         install(LettuceRedis)
 

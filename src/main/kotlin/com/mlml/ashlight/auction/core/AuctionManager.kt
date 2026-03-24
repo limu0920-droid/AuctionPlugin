@@ -33,4 +33,62 @@ object AuctionManager {
             """{"code":200,"message":"成功"}"""
         ChannelRegistry.sendData(player, "legendengine:auction_bid_result", response)
     }
+    fun handleBuy(player: Player, itemId: String) {
+        // TODO: 查库 → 扣款 → 转移物品
+        val response = """{"code":200,"message":"购买成功"}"""
+        ChannelRegistry.sendData(player, "legendengine:auction", response)
+    }
+
+    fun handleCreate(player: Player, data: String) {
+        val parts = data.split("|")
+        if (parts.size < 6) {
+            ChannelRegistry.sendData(player, "legendengine:auction_create_result",
+                """{"code":400,"message":"参数错误"}""")
+            return
+        }
+        val itemName  = parts[0]
+        val category  = parts[1]
+        val mode      = parts[2]
+        val price     = parts[3].toLongOrNull() ?: 0L
+        val duration  = parts[4].toIntOrNull() ?: 1
+        val seller    = parts[5]
+
+        // TODO: 写库
+        val response = """{"code":200,"message":"上架成功"}"""
+        ChannelRegistry.sendData(player, "legendengine:auction_create_result", response)
+    }
+    fun queryMyListings(player: Player, playerName: String) {
+        val now = System.currentTimeMillis() / 1000
+        val expireAt = now + 3600
+        // TODO: 查库
+        val json = """{"code":200,"data":[
+        {"id":1,"itemName":"钻石剑","category":"武器","mode":"fixed","price":5000,
+         "currentBid":0,"status":"active","expireAt":$expireAt,"_serverNow":$now}
+    ]}"""
+        ChannelRegistry.sendData(player, "legendengine:auction_mylistings_data", json)
+    }
+
+    fun handleCancel(player: Player, itemId: String) {
+        // TODO: 查库校验 → 删除或标记取消
+        val response = """{"code":200,"message":"取消成功"}"""
+        ChannelRegistry.sendData(player, "legendengine:auction_cancel_result", response)
+    }
+
+    fun queryHistory(player: Player, playerName: String) {
+        // TODO: 查库
+        val json = """{"code":200,"data":[
+        {"role":"seller","itemName":"钻石剑","price":5000,"fee":250,"mode":"fixed","target":"买家A"},
+        {"role":"buyer","itemName":"铁胸甲","price":1200,"fee":0,"mode":"auction","target":"卖家B"}
+    ]}"""
+        ChannelRegistry.sendData(player, "legendengine:auction_history_data", json)
+    }
+
+    fun queryLogs(player: Player) {
+        // TODO: 查库，logs 是全局日志不过滤玩家
+        val json = """{"code":200,"data":[
+        {"type":"上架","player":"张三","itemName":"钻石剑","amount":5000},
+        {"type":"购买","player":"李四","itemName":"铁胸甲","amount":1200}
+    ]}"""
+        ChannelRegistry.sendData(player, "legendengine:auction_logs_data", json)
+    }
 }

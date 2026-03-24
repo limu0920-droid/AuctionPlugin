@@ -24,6 +24,14 @@ object ChannelRegistry : PluginMessageListener {
         messenger.registerIncomingPluginChannel(plugin, "legendengine:auction", this)
         messenger.registerOutgoingPluginChannel(plugin, "legendengine:data_packet")
         messenger.registerOutgoingPluginChannel(plugin, "legendengine:rpc_packet")
+        messenger.registerOutgoingPluginChannel(plugin, "legendengine:auction")
+        messenger.registerOutgoingPluginChannel(plugin, "legendengine:auction_bid_data")
+        messenger.registerOutgoingPluginChannel(plugin, "legendengine:auction_bid_result")
+        messenger.registerOutgoingPluginChannel(plugin, "legendengine:auction_mylistings_data")
+        messenger.registerOutgoingPluginChannel(plugin, "legendengine:auction_cancel_result")
+        messenger.registerOutgoingPluginChannel(plugin, "legendengine:auction_history_data")
+        messenger.registerOutgoingPluginChannel(plugin, "legendengine:auction_create_result")
+        messenger.registerOutgoingPluginChannel(plugin, "legendengine:auction_logs_data")
     }
 
     fun unregister() {
@@ -32,8 +40,15 @@ object ChannelRegistry : PluginMessageListener {
         messenger.unregisterIncomingPluginChannel(plugin, "legendengine:auction")
         messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:data_packet")
         messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:rpc_packet")
+        messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:auction")
+        messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:auction_bid_data")
+        messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:auction_bid_result")
+        messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:auction_mylistings_data")
+        messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:auction_cancel_result")
+        messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:auction_history_data")
+        messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:auction_create_result")
+        messenger.unregisterOutgoingPluginChannel(plugin, "legendengine:auction_logs_data")
     }
-
     override fun onPluginMessageReceived(channel: String, player: Player, message: ByteArray) {
         if (channel != "legendengine:auction") return
 
@@ -50,6 +65,12 @@ object ChannelRegistry : PluginMessageListener {
                 "list"         -> AuctionManager.queryPage(player, value.toIntOrNull() ?: 1)
                 "list_auction" -> AuctionManager.queryAuctionPage(player, value)
                 "bid"          -> AuctionManager.handleBid(player, value)
+                "buy"          -> AuctionManager.handleBuy(player, value)
+                "create"       -> AuctionManager.handleCreate(player, value)
+                "myListings"   -> AuctionManager.queryMyListings(player, value)
+                "cancel"       -> AuctionManager.handleCancel(player, value)
+                "history"      -> AuctionManager.queryHistory(player, value)
+                "logs"         -> AuctionManager.queryLogs(player)
             }
         } catch (e: Exception) {
             info("[错误] 解析失败: ${e.message}")

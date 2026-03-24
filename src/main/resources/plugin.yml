@@ -1,7 +1,8 @@
 name: AuctionPlugin
 version: 1.0.0
-main: taboolib.platform.BukkitPlugin
+main: com.mlml.ashlight.taboolib.platform.BukkitPlugin
 api-version: 1.13
+softdepend: [Orryx, BackPack, Adyeshach]
 commands:
   ah:
     description: 打开拍卖行界面

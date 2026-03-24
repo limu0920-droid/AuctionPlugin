@@ -51,7 +51,11 @@ object RedisManager {
     /** 写操作后失效所有分页缓存 */
     fun invalidatePageCache() = try {
         val keys = sync().keys("auction:page:*")
-        if (keys.isNotEmpty()) sync().del(*keys.toTypedArray())
+        if (keys.isNotEmpty()) {
+            sync().del(*keys.toTypedArray())
+        } else {
+            Unit;
+        }
     } catch (e: Exception) {
         warning("[Redis] 失效缓存失败: ${e.message}")
     }

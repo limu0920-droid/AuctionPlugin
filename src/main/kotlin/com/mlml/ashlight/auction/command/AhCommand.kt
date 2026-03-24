@@ -13,7 +13,7 @@ object AhCommand : CommandExecutor {
             sender.sendMessage("§c只有玩家可以使用此命令！")
             return true
         }
-        ChannelRegistry.sendRpc(sender, "open_ui", "main")
+        ChannelRegistry.sendRpc(sender, "ui open", "main")//LegendEngine ui open main 命令
         sender.sendMessage("§a[拍卖行] 正在打开界面...")
         return true
     }
