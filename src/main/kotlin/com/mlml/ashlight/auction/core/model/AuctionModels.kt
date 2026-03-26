@@ -20,7 +20,7 @@ data class AuctionItem(
 )
 
 /**
- * 分页响应，序列化后通过 legendengine:data_packet 发给客户端
+ * 分页响应，序列化后通过 ashilight:data_packet 发给客户端
  */
 @Serializable
 data class AuctionPage(

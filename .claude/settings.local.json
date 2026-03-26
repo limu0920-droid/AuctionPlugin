@@ -4,7 +4,8 @@
       "Bash(grep -E \"\\\\.\\(yml|yaml|properties|gradle\\\\.kts\\)$\")",
       "Bash(./gradlew shadowJar)",
       "Bash(ls:*)",
-      "Bash(jar tf:*)"
+      "Bash(jar tf:*)",
+      "Bash(javap:*)"
     ]
   }
 }
