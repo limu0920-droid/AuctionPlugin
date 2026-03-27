@@ -53,6 +53,7 @@ dependencies {
     taboo("org.apache.commons:commons-pool2:2.12.0")
     taboo("com.zaxxer:HikariCP:4.0.3")
     taboo("mysql:mysql-connector-java:8.0.33")
+    taboo("com.github.ben-manes.caffeine:caffeine:2.9.3")
 
     compileOnly("ink.ptms.core:v12004:12004:mapped")
     compileOnly("ink.ptms.core:v12004:12004:universal")

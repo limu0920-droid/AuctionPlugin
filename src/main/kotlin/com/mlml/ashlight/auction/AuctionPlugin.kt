@@ -67,8 +67,8 @@ object AuctionPlugin : Plugin() {
             MyListingService,     // 我的上架查询
             CancelService,        // 取消上架
             HistoryService,       // 历史记录查询
-            LogService            // 日志查询
+            LogService           // 日志查询
+            // PingService           // 信号处理（已注释）
         )
     }
 }
-

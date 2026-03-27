@@ -41,6 +41,7 @@ object Database {
                     item_name   VARCHAR(255) NOT NULL,
                     amount      INT          NOT NULL DEFAULT 1,
                     price       BIGINT       NOT NULL,
+                    category    VARCHAR(32)  NOT NULL DEFAULT '其他',
                     seller_uuid VARCHAR(36)  NOT NULL,
                     expire_at   BIGINT       NOT NULL,
                     status      VARCHAR(16)  NOT NULL DEFAULT 'active',
@@ -68,6 +69,7 @@ object Database {
                         name       = rs.getString("item_name"),
                         amount     = rs.getInt("amount"),
                         price      = rs.getLong("price"),
+                        category   = rs.getString("category"),
                         sellerUuid = rs.getString("seller_uuid"),
                         expireAt   = rs.getLong("expire_at")
                     )
@@ -89,11 +91,77 @@ object Database {
         }
     }
 
+    /** 查询玩家的上架物品 */
+    fun queryMyListings(sellerUuid: String): List<AuctionItem> {
+        val sql = "SELECT * FROM auction_items WHERE seller_uuid=? AND status='active' AND expire_at > ? ORDER BY expire_at ASC"
+        return dataSource.connection.use { conn ->
+            conn.prepareStatement(sql).use { ps ->
+                ps.setString(1, sellerUuid)
+                ps.setLong(2, System.currentTimeMillis() / 1000)
+                val rs = ps.executeQuery()
+                val list = mutableListOf<AuctionItem>()
+                while (rs.next()) {
+                    list += AuctionItem(
+                        uuid       = rs.getString("uuid"),
+                        name       = rs.getString("item_name"),
+                        amount     = rs.getInt("amount"),
+                        price      = rs.getLong("price"),
+                        category   = rs.getString("category"),
+                        sellerUuid = rs.getString("seller_uuid"),
+                        expireAt   = rs.getLong("expire_at")
+                    )
+                }
+                list
+            }
+        }
+    }
+
+    /** 查询玩家的历史交易记录 */
+    fun queryHistory(playerUuid: String): List<TransactionRecord> {
+        val sql = """
+            (SELECT 'seller' as role, item_name, price, fee, mode, buyer_uuid as target, created_at
+             FROM auction_history WHERE seller_uuid=?)
+            UNION ALL
+            (SELECT 'buyer' as role, item_name, price, fee, mode, seller_uuid as target, created_at
+             FROM auction_history WHERE buyer_uuid=?)
+            ORDER BY created_at DESC LIMIT 50
+        """.trimIndent()
+        return dataSource.connection.use { conn ->
+            conn.prepareStatement(sql).use { ps ->
+                ps.setString(1, playerUuid)
+                ps.setString(2, playerUuid)
+                val rs = ps.executeQuery()
+                val list = mutableListOf<TransactionRecord>()
+                while (rs.next()) {
+                    list += TransactionRecord(
+                        role      = rs.getString("role"),
+                        itemName  = rs.getString("item_name"),
+                        price     = rs.getLong("price"),
+                        target    = rs.getString("target"),
+                        mode      = rs.getString("mode"),
+                        fee       = rs.getLong("fee")
+                    )
+                }
+                list
+            }
+        }
+    }
+
+    /** 交易记录 */
+    data class TransactionRecord(
+        val role: String,
+        val itemName: String,
+        val price: Long,
+        val target: String,
+        val mode: String,
+        val fee: Long
+    )
+
     // ── 写操作 ────────────────────────────────────────────
 
     /** 上架物品，返回是否成功 */
-    fun listItem(sellerUuid: String, itemName: String, amount: Int, price: Long, expireHours: Int): Boolean {
-        val sql = "INSERT INTO auction_items (uuid, item_name, amount, price, seller_uuid, expire_at) VALUES (?,?,?,?,?,?)"
+    fun listItem(sellerUuid: String, itemName: String, amount: Int, price: Long, category: String, expireHours: Int): Boolean {
+        val sql = "INSERT INTO auction_items (uuid, item_name, amount, price, category, seller_uuid, expire_at) VALUES (?,?,?,?,?,?,?)"
         return try {
             dataSource.connection.use { conn ->
                 conn.prepareStatement(sql).use { ps ->
@@ -101,8 +169,9 @@ object Database {
                     ps.setString(2, itemName)
                     ps.setInt(3, amount)
                     ps.setLong(4, price)
-                    ps.setString(5, sellerUuid)
-                    ps.setLong(6, System.currentTimeMillis() / 1000 + expireHours * 3600L)
+                    ps.setString(5, category)
+                    ps.setString(6, sellerUuid)
+                    ps.setLong(7, System.currentTimeMillis() / 1000 + expireHours * 3600L)
                     ps.executeUpdate() > 0
                 }
             }

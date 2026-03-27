@@ -29,4 +29,7 @@ object PluginConfig {
     val redisPort: Int get() = config.getInt("redis.port", 6379)
     val redisPassword: String get() = config.getString("redis.password", "")!!
     val redisPageTtl: Long get() = config.getLong("redis.page-ttl", 300)
+
+    val caffeineMaxSize: Long get() = config.getLong("caffeine.max-size", 200)
+    val caffeineExpireSeconds: Long get() = config.getLong("caffeine.expire-seconds", 30)
 }

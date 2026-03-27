@@ -3,7 +3,7 @@ mysql:
   port: 3306
   database: "auction"
   username: "root"
-  password: "password"
+  password: "2008330a"
   pool-size: 10
 
 redis:

@@ -111,7 +111,9 @@ object ChannelRegistry : PluginMessageListener, ResponseSender {
         val stream = DataOutputStream(out)
         stream.writeMcString(data)
         val bytes = out.toByteArray()
-        info("[发包] channel=$targetChannel player=${player.name} bytes=${bytes.size}")
+        // 限制日志长度，避免日志过长
+        val logData = if (data.length > 1000) "${data.substring(0, 1000)}..." else data
+        info("[发包] channel=$targetChannel player=${player.name} bytes=${bytes.size} data=$logData")
         try {
             player.sendPluginMessage(BukkitPlugin.getInstance(), targetChannel, bytes)
             info("[发包成功] $targetChannel")

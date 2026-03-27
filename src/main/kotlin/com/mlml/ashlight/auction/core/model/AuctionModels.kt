@@ -15,6 +15,7 @@ data class AuctionItem(
     val name: String,
     val amount: Int,
     val price: Long,
+    val category: String = "其他",
     @SerialName("seller_uuid") val sellerUuid: String,
     @SerialName("expire_at")   val expireAt: Long
 )
